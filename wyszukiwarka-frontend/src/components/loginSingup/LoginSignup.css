@@ -1,0 +1,259 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 50px;
+    width: 738px;
+    height: 767px;
+    background: #fff;
+    padding-bottom: 30px;
+}
+
+.header-text{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.header-text img{
+    width: 40px;
+}
+
+.header-text h1{
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-text h2{
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+.submit-container{
+    display: flex;
+    margin: 32px auto;
+    background: #F3F4F6;
+    padding: 4px;
+    border-radius: 12px;
+    width: 658px;
+    height: 39px;
+}
+
+.submit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 323px;
+    height: 31px;
+    color: #000000;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.gray{
+    background: #F3F4F6;
+}
+
+
+.text{
+    color: #3c009d;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.underline{
+    width: 61px;
+    height: 6px;
+    background: #3c009d;
+    border-radius: 9px;
+}
+
+.inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 40px;
+}
+
+.inputs.grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 0 40px;
+}
+
+.input{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input label{
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.input-text{
+    display: flex;
+    align-items: center;
+    border: 1px solid #9CA3AF;
+    border-radius: 8px;
+    height: 47px;
+    padding: 0 14px;
+    gap: 8px;
+}
+
+.input-text img{
+   width: 18px;
+   opacity: 1;
+}
+
+.input-text input{
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #9CA3AF;
+    width: 100%;
+}
+
+.terms-checkbox{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 40px;
+    font-size: 16px;
+    margin-top: 32px;
+}
+
+.terms-checkbox span{
+    color: #2563EB;
+    cursor: pointer;
+}
+
+.remember-me{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 40px;
+    font-size: 16px;
+    margin-top: 16px;
+    justify-content: space-between;
+}
+
+.remember-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.forgot {
+  color: #2563EB;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 661px;
+    height: 51px;
+    background: #2563EB;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 32px auto 0 auto;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.diffrent-login-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 40px;
+  margin-top: 24px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: #9CA3AF;
+  display: block;  
+}
+
+.between-line-text {
+  font-size: 14px;
+  color: #9CA3AF;
+  white-space: nowrap;
+  font-weight: 700;
+  margin: 0;
+}   
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+  padding: 0 40px;
+  margin-top: 32px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.icon label{
+    cursor: pointer;
+}
+
+.social-icons img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.google {
+  border: 1px solid #E5E7EB;
+  color: #000;
+}
+
+.facebook {
+  background: #3B82F6;
+  color: #fff;
+}
+
+.no-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    font-size: 14px;
+    color: #6B7280;
+    font-weight: 400;
+}
+
+.no-account span{
+    color: #2563EB;
+    cursor: pointer;
+    font-weight: 700;
+}
