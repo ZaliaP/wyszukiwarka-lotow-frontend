@@ -3,12 +3,14 @@
 //import viteLogo from './assets/vite.svg'
 //import heroImg from './assets/hero.png'
 import './App.css'
-import LoginSignup from './components/loginSingup/LoginSignup'
+import Home from './pages/Home/Home'
+// Jeśli chcesz pokazać stronę logowania, możesz zaimportować ją z powrotem lub użyć routera
+// import LoginSignup from './components/loginSingup/LoginSignup'
 
 function App() {
   return (
-    <div>
-      <LoginSignup/>
+    <div className="App">
+      <Home />
     </div>
   )
 }

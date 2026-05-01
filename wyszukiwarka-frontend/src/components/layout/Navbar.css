@@ -1,0 +1,84 @@
+.navbar {
+  position: absolute; /* Transparent navbar mostly for hero image */
+  top: 0;
+  width: 100%;
+  padding: 1.5rem 0;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.logo-icon-img {
+  width: 28px;
+  height: auto;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover, .navbar-links a.active {
+  color: #a0c4ff;
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-actions button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.btn-login {
+  background: transparent;
+  color: white;
+  border: 1px solid white !important;
+}
+
+.btn-login:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.btn-register {
+  background-color: #3b82f6; 
+  color: white;
+}
+
+.btn-register:hover {
+  background-color: #2563eb;
+}

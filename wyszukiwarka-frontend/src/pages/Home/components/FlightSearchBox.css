@@ -1,0 +1,196 @@
+.search-box-container {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  color: #333;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.search-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.trip-types {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #4b5563;
+}
+
+/* Niestandardowy radio button */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #6b7280;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  background-color: #3b82f6; /* Niebieski kolor wypełnienia */
+}
+
+input[type="radio"]:checked {
+  border-color: #3b82f6; /* Opcjonalnie: niebieska obwódka po zaznaczeniu */
+}
+
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.radio-custom {
+  display: none;
+}
+
+.other-options {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+  flex: 1;
+}
+
+.passengers-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.class-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inline-svg-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.dropdown-svg-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: 0.25rem;
+  opacity: 0.6;
+}
+
+.passengers-select, .class-select {
+  cursor: pointer;
+}
+
+.search-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+  flex: 1;
+  min-width: 150px;
+}
+
+.location-group {
+  flex: 1.5;
+}
+
+.date-group {
+  flex: 1;
+}
+
+.input-svg-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+  opacity: 0.5;
+}
+
+.input-group input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.input-group input::placeholder {
+  color: #9ca3af;
+}
+
+.swap-btn {
+  position: absolute;
+  right: -16px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #4b5563;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.search-box-bottom-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.search-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.85rem 2.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+  background-color: #2563eb;
+}

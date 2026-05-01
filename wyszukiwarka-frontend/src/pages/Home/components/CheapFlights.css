@@ -1,0 +1,134 @@
+.cheap-flights-section {
+  padding: 5rem 2rem;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+.cheap-flights-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header-center {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.section-header-center h2 {
+  font-size: 2.2rem;
+  color: #000;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.section-header-center p {
+  color: #9ca3af;
+  font-size: 1.05rem;
+}
+
+.flights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+@media (max-width: 992px) {
+  .flights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .flights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flight-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f8f9fa;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.flight-row:hover {
+  transform: translateY(-2px);
+  background: #f1f3f5;
+}
+
+.flight-icon {
+  width: 48px;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4285F4;
+  flex-shrink: 0;
+}
+
+.plane-svg {
+  width: 24px;
+  height: 24px;
+  /* usunięto rotate(-45deg), by plik SVG decydował o obrocie */
+}
+
+.flight-details {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.flight-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #000;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flight-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flight-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4285F4;
+  white-space: nowrap;
+}
+
+.see-more-container {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-see-more {
+  background: transparent;
+  color: #4285F4;
+  border: 1px solid #8ab4f8;
+  padding: 0.75rem 2.5rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-see-more:hover {
+  background-color: #f0f7ff;
+  border-color: #4285F4;
+}
