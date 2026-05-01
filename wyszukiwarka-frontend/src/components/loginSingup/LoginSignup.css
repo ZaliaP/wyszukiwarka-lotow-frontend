@@ -1,12 +1,29 @@
 .container{
+    position: relative;
     display: flex;
     flex-direction: column;
     margin: auto;
     margin-top: 50px;
     width: 738px;
-    height: 767px;
+    height: auto;
+    min-height: 767px;
     background: #fff;
-    padding-bottom: 30px;
+    padding-bottom: 50px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.back-arrow {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    color: #6B7280;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.back-arrow:hover {
+    color: #000;
 }
 
 .header-text{
@@ -37,29 +54,31 @@
     display: flex;
     margin: 32px auto;
     background: #F3F4F6;
-    padding: 4px;
-    border-radius: 12px;
-    width: 658px;
-    height: 39px;
+    padding: 6px;
+    border-radius: 14px;
+    height: 60px;
+    width: calc(100% - 80px);
 }
 
 .submit{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 323px;
-    height: 31px;
-    color: #000000;
-    background: #fff;
+    flex: 1;
+    height: 100%;
+    color: #6B7280;
+    background: transparent;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 8px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
 .gray{
-    background: #F3F4F6;
+    background: #fff;
+    color: #000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 
@@ -100,7 +119,6 @@
     margin-bottom: 8px;
     font-size: 14px;
     font-weight: 500;
-    margin-left: 40px;
 }
 
 .input-text{
@@ -132,8 +150,14 @@
     align-items: center;
     gap: 8px;
     padding: 0 40px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 32px;
+}
+
+.terms-checkbox input{
+    width: 16px;
+    height: 16px;
+    accent-color: #2563EB;
 }
 
 .terms-checkbox span{
@@ -146,7 +170,7 @@
     align-items: center;
     gap: 8px;
     padding: 0 40px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 16px;
     justify-content: space-between;
 }
@@ -157,25 +181,33 @@
   gap: 8px;
 }
 
+.remember-left input {
+    width: 16px;
+    height: 16px;
+    accent-color: #2563EB;
+}
+
 .forgot {
   color: #2563EB;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .submit-button{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 661px;
-    height: 51px;
+    min-height: 54px;
+    height: 54px;
     background: #2563EB;
     color: #fff;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     margin: 32px auto 0 auto;
-    border-radius: 8px;
+    width: calc(100% - 80px);
+    border-radius: 10px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .diffrent-login-options {
@@ -199,6 +231,7 @@
   white-space: nowrap;
   font-weight: 700;
   margin: 0;
+  text-transform: uppercase;
 }   
 
 .social-icons {
@@ -214,9 +247,9 @@
   justify-content: center;
   gap: 10px;
   flex: 1;
-  height: 44px;
-  border-radius: 8px;
-  font-size: 14px;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }

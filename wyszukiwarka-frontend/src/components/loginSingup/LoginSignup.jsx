@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import './LoginSignup.css';
 
 import user_icon from '../asserts/person.svg';
@@ -9,11 +10,25 @@ import google_icon from '../asserts/icons/google.svg';
 import facebook_icon from '../asserts/icons/facebook.svg';
 
 const LoginSignup = () => {
+  const location = useLocation();
+  const defaultAction = location.state?.action || 'Logowanie';
+  const [action, setAction] = useState(defaultAction);
 
-const [action, setAction] = useState('Logowanie');
+  useEffect(() => {
+    if (location.state?.action) {
+      setAction(location.state.action);
+    }
+  }, [location.state]);
 
   return (
     <div className="container">
+      <Link to="/" className="back-arrow" title="Powrót do strony głównej">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </Link>
+
       <div className="header-text">
         <img src={plane_icon} alt="" width="40" />
         <h1>Witaj w SkyFlyer</h1>
@@ -21,8 +36,8 @@ const [action, setAction] = useState('Logowanie');
       </div>
 
       <div className="submit-container">
-            <div className={action==="Rejestracja"?"submit gray":"submit"} onClick={() => {setAction('Logowanie')}}>Logowanie</div>
-            <div className={action==="Logowanie"?"submit gray":"submit"} onClick={() => {setAction('Rejestracja')}}>Rejestracja</div>
+            <div className={action==="Logowanie"?"submit gray":"submit"} onClick={() => {setAction('Logowanie')}}>Logowanie</div>
+            <div className={action==="Rejestracja"?"submit gray":"submit"} onClick={() => {setAction('Rejestracja')}}>Rejestracja</div>
         </div>
 
         <div className={action === "Rejestracja" ? "inputs grid" : "inputs"}>
