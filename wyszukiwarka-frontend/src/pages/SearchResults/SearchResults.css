@@ -13,7 +13,7 @@
 }
 
 .summary-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
@@ -87,18 +87,22 @@
 
 /* Main Content */
 .search-results-content {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 32px auto;
   padding: 0 20px;
   display: flex;
-  gap: 32px;
+  gap: 64px;
   flex: 1;
 }
 
 /* Filters Sidebar */
 .filters-sidebar {
-  width: 250px;
+  width: 260px;
   flex-shrink: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
 }
 
 .filters-header {
@@ -148,9 +152,6 @@
 
 .checkbox-label input {
   margin-right: 12px;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
 }
 
 .price-tag {
@@ -173,12 +174,17 @@
 
 .price-slider {
   width: 100%;
+  accent-color: #3b82f6; /* Blue slider */
 }
 
 .time-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.time-btn:nth-child(3) {
+  grid-column: 1 / -1;
 }
 
 .time-btn {
@@ -191,6 +197,7 @@
   background-color: white;
   cursor: pointer;
   transition: all 0.2s;
+  width: 100%;
 }
 
 .time-btn.active {
@@ -198,9 +205,11 @@
   background-color: #eff6ff;
 }
 
-.time-btn .icon {
-  font-size: 20px;
+.time-icon-svg {
+  width: 24px;
+  height: 24px;
   margin-bottom: 4px;
+  display: block;
 }
 
 .time-name {
@@ -276,10 +285,11 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: 1;
+  margin-right: 16px;
 }
 
 .alert-icon {
-  font-size: 24px;
   background-color: rgba(255,255,255,0.2);
   width: 48px;
   height: 48px;
@@ -287,6 +297,12 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
+}
+
+.alert-icon-svg {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .alert-text h4 {
@@ -327,11 +343,16 @@
   overflow: hidden;
 }
 
+.result-card.expanded {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+}
+
 .rc-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 20px 24px 8px 24px;
 }
 
 .rc-airline {
@@ -367,6 +388,9 @@
 }
 
 .tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 12px;
@@ -375,19 +399,24 @@
 
 .tag.eco { background-color: #d1fae5; color: #059669; }
 .tag.best-price { background-color: #dbeafe; color: #2563eb; }
-.tag.plain { background-color: #f3f4f6; color: #4b5563; }
+.tag.plain { background-color: transparent; color: #6b7280; font-weight: normal; font-size: 13px; }
 
-.rc-middle {
+.rc-body {
   display: flex;
-  padding: 0 24px 20px 24px;
-  align-items: center;
+}
+
+.rc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .flight-timeline {
-  flex: 2;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 12px 24px 0 24px;
 }
 
 .departure h3, .arrival h3 {
@@ -449,26 +478,72 @@
   color: #f59e0b;
 }
 
+.rc-details-toggle {
+  padding: 8px 24px 16px 24px;
+}
+
+.btn-toggle {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.arrow-up {
+  transform: rotate(180deg);
+}
+
+.btn-toggle .inline-icon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: currentColor; /* Użyje głównego koloru przycisku (#3b82f6) */
+  mask-image: url('../../components/asserts/DownArrow.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('../../components/asserts/DownArrow.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
 .rc-pricing {
-  flex: 1;
+  width: 220px;
+  background-color: #f9fafb;
+  border-left: 1px solid #e5e7eb;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  border-left: 1px solid #e5e7eb;
-  padding-left: 24px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.result-card.expanded .rc-pricing {
+  background-color: transparent;
 }
 
 .price {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: #111827;
   margin: 0 0 4px 0;
+  text-align: center;
 }
 
 .price-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: #6b7280;
   margin: 0 0 16px 0;
+  text-align: center;
 }
 
 .btn-select-main {
@@ -483,7 +558,7 @@
 }
 
 .btn-select-outline {
-  background-color: white;
+  background-color: transparent;
   color: #3b82f6;
   border: 1px solid #3b82f6;
   padding: 10px 24px;
@@ -491,22 +566,6 @@
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-}
-
-.rc-details-toggle {
-  border-top: 1px solid #f3f4f6;
-}
-
-.btn-toggle {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 12px;
-  color: #3b82f6;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
 }
 
 .rc-expanded-details {

@@ -8,7 +8,8 @@
   background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
 }
 
-.manage-booking-wrapper .navbar {
+.manage-booking-wrapper .navbar,
+.search-results-wrapper .navbar {
   position: static;
   background: #0f172a;
 }

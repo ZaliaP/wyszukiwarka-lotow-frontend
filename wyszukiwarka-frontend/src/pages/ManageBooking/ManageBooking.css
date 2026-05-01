@@ -324,6 +324,26 @@
   background-color: #fee2e2;
 }
 
+.inline-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.addon-icon-svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
 @media (max-width: 900px) {
   .flight-card-body {
     flex-direction: column;

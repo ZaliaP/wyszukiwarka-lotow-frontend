@@ -3,6 +3,16 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import './SearchResults.css';
 
+import calendarIcon from '../../components/asserts/calendar2.svg';
+import userIcon from '../../components/asserts/person.svg';
+import bagageIcon from '../../components/asserts/Bagage.svg';
+import brightIcon from '../../components/asserts/bright.svg';
+import bellIcon from '../../components/asserts/bell.svg';
+import sunIcon from '../../components/asserts/sun.svg';
+import halfSunIcon from '../../components/asserts/halfsun.svg';
+import moonIcon from '../../components/asserts/moon.svg';
+import leafIcon from '../../components/asserts/leaf.svg';
+
 const SearchResults = () => {
   const [activeTab, setActiveTab] = useState('cheapest');
 
@@ -27,19 +37,19 @@ const SearchResults = () => {
           
           <div className="summary-details">
             <div className="detail-item">
-              <span className="icon">📅</span> 15 cze - 22 cze
+              <img src={calendarIcon} alt="data" className="inline-icon" /> 15 cze - 22 cze
             </div>
             <div className="detail-item">
-              <span className="icon">👤</span> 1 pasażer
+              <img src={userIcon} alt="pasażer" className="inline-icon" /> 1 pasażer
             </div>
             <div className="detail-item">
-              <span className="icon">💺</span> Ekonomiczna
+              <img src={brightIcon} alt="klasa" className="inline-icon" /> Ekonomiczna
             </div>
           </div>
           
           <div className="summary-actions">
             <button className="btn-track-prices">
-              <span className="icon">🔔</span> Śledź ceny
+              <img src={bellIcon} alt="dzwonek" className="inline-icon" /> Śledź ceny
             </button>
           </div>
         </div>
@@ -86,17 +96,17 @@ const SearchResults = () => {
             <h4>Godziny wylotu (z WAW)</h4>
             <div className="time-buttons">
               <button className="time-btn">
-                <span className="icon">☀️</span>
+                <img src={sunIcon} alt="rano" className="time-icon-svg" />
                 <span className="time-name">Rano</span>
                 <span className="time-range">00:00 - 11:59</span>
               </button>
               <button className="time-btn">
-                <span className="icon">⛅</span>
+                <img src={halfSunIcon} alt="popołudnie" className="time-icon-svg" />
                 <span className="time-name">Popołudnie</span>
                 <span className="time-range">12:00 - 17:59</span>
               </button>
               <button className="time-btn active">
-                <span className="icon">🌙</span>
+                <img src={moonIcon} alt="wieczór" className="time-icon-svg" />
                 <span className="time-name">Wieczór</span>
                 <span className="time-range">18:00 - 23:59</span>
               </button>
@@ -164,7 +174,7 @@ const SearchResults = () => {
 
           <div className="price-alert-box">
             <div className="alert-content">
-              <div className="alert-icon">🔔</div>
+              <div className="alert-icon"><img src={bellIcon} alt="alert" className="alert-icon-svg" /></div>
               <div className="alert-text">
                 <h4>Ceny dla twojej trasy mogą wzrosnąć!</h4>
                 <p>Włącz powiadomienia aby dostać alert gdy ceny spadną</p>
@@ -177,33 +187,39 @@ const SearchResults = () => {
             
             {/* Flight 1 (Expanded) */}
             <div className="flight-card result-card expanded">
-              <div className="rc-main">
-                <div className="rc-airline">
-                  <div className="rc-airline-logo wizz">W</div>
-                  <span className="rc-airline-name">WIZZ AIR</span>
-                </div>
-                <div className="rc-tags">
-                  <span className="tag eco">🌱 -18% CO2</span>
-                  <span className="tag best-price">Najtańszy</span>
-                </div>
-              </div>
-
-              <div className="rc-middle">
-                <div className="flight-timeline">
-                  <div className="departure">
-                    <h3>14:20</h3>
-                    <p>WAW</p>
-                  </div>
-                  <div className="duration">
-                    <p>1h 55m</p>
-                    <div className="line">
-                      <span className="dot"></span>
+              <div className="rc-body">
+                <div className="rc-info">
+                  <div className="rc-main">
+                    <div className="rc-airline">
+                      <div className="rc-airline-logo wizz">W</div>
+                      <span className="rc-airline-name">WIZZ AIR</span>
                     </div>
-                    <p className="type">BEZPOŚREDNI</p>
+                    <div className="rc-tags">
+                      <span className="tag eco"><img src={leafIcon} alt="eco" className="inline-icon" /> -18% CO2</span>
+                      <span className="tag best-price">Najtańszy</span>
+                    </div>
                   </div>
-                  <div className="arrival">
-                    <h3>16:15</h3>
-                    <p>LTN</p>
+                  <div className="flight-timeline">
+                    <div className="departure">
+                      <h3>14:20</h3>
+                      <p>WAW</p>
+                    </div>
+                    <div className="duration">
+                      <p>1h 55m</p>
+                      <div className="line">
+                        <span className="dot"></span>
+                      </div>
+                      <p className="type">BEZPOŚREDNI</p>
+                    </div>
+                    <div className="arrival">
+                      <h3>16:15</h3>
+                      <p>LTN</p>
+                    </div>
+                  </div>
+                  <div className="rc-details-toggle">
+                    <button className="btn-toggle">
+                      Mniej szczegółów <span className="inline-icon arrow-up"></span>
+                    </button>
                   </div>
                 </div>
                 <div className="rc-pricing">
@@ -211,10 +227,6 @@ const SearchResults = () => {
                   <p className="price-desc">Zwykły bilet / os.</p>
                   <button className="btn-select-main">Wybierz</button>
                 </div>
-              </div>
-
-              <div className="rc-details-toggle">
-                <button className="btn-toggle">Mniej szczegółów <span className="arrow-up">^</span></button>
               </div>
 
               <div className="rc-expanded-details">
@@ -229,8 +241,8 @@ const SearchResults = () => {
                   
                   <div className="timeline-travel">
                     <span>W6 1301 (Airbus A320)</span>
-                    <span>🎒 Tylko przedmioty osobiste</span>
-                    <span>💺 Klasa ekonomiczna</span>
+                    <span><img src={bagageIcon} alt="bagaż" className="inline-icon" /> Tylko przedmioty osobiste</span>
+                    <span><img src={brightIcon} alt="klasa" className="inline-icon" /> Klasa ekonomiczna</span>
                   </div>
 
                   <div className="timeline-point">
@@ -246,32 +258,38 @@ const SearchResults = () => {
 
             {/* Flight 2 */}
             <div className="flight-card result-card">
-              <div className="rc-main">
-                <div className="rc-airline">
-                  <div className="rc-airline-logo lot">LOT</div>
-                  <span className="rc-airline-name">LOT Polish Airlines</span>
-                </div>
-                <div className="rc-tags">
-                  <span className="tag plain">🎒 Wliczony bagaż podręczny</span>
-                </div>
-              </div>
-
-              <div className="rc-middle">
-                <div className="flight-timeline">
-                  <div className="departure">
-                    <h3>8:00</h3>
-                    <p>WAW</p>
-                  </div>
-                  <div className="duration">
-                    <p>1h 45m</p>
-                    <div className="line">
-                      <span className="dot"></span>
+              <div className="rc-body">
+                <div className="rc-info">
+                  <div className="rc-main">
+                    <div className="rc-airline">
+                      <div className="rc-airline-logo lot">LOT</div>
+                      <span className="rc-airline-name">LOT Polish Airlines</span>
                     </div>
-                    <p className="type">BEZPOŚREDNI</p>
+                    <div className="rc-tags">
+                      <span className="tag plain"><img src={bagageIcon} alt="bagaż" className="inline-icon" /> Wliczony bagaż podręczny</span>
+                    </div>
                   </div>
-                  <div className="arrival">
-                    <h3>9:45</h3>
-                    <p>LHR</p>
+                  <div className="flight-timeline">
+                    <div className="departure">
+                      <h3>8:00</h3>
+                      <p>WAW</p>
+                    </div>
+                    <div className="duration">
+                      <p>1h 45m</p>
+                      <div className="line">
+                        <span className="dot"></span>
+                      </div>
+                      <p className="type">BEZPOŚREDNI</p>
+                    </div>
+                    <div className="arrival">
+                      <h3>9:45</h3>
+                      <p>LHR</p>
+                    </div>
+                  </div>
+                  <div className="rc-details-toggle">
+                    <button className="btn-toggle">
+                      Szczegóły lotu <span className="inline-icon arrow-down"></span>
+                    </button>
                   </div>
                 </div>
                 <div className="rc-pricing">
@@ -280,40 +298,42 @@ const SearchResults = () => {
                   <button className="btn-select-outline">Wybierz</button>
                 </div>
               </div>
-              
-              <div className="rc-details-toggle">
-                <button className="btn-toggle">Szczegóły lotu <span className="arrow-down">v</span></button>
-              </div>
             </div>
 
             {/* Flight 3 */}
             <div className="flight-card result-card">
-              <div className="rc-main">
-                <div className="rc-airline">
-                  <div className="rc-airline-logo lufthansa">L</div>
-                  <span className="rc-airline-name">LUFTHANSA</span>
-                </div>
-                <div className="rc-tags">
-                  <span className="tag plain">💼 Bagaż rejestrowany 23 kg</span>
-                </div>
-              </div>
-
-              <div className="rc-middle">
-                <div className="flight-timeline">
-                  <div className="departure">
-                    <h3>10:00</h3>
-                    <p>WAW</p>
-                  </div>
-                  <div className="duration">
-                    <p>4h 20m</p>
-                    <div className="line">
-                      <span className="dot stopover"></span>
+              <div className="rc-body">
+                <div className="rc-info">
+                  <div className="rc-main">
+                    <div className="rc-airline">
+                      <div className="rc-airline-logo lufthansa">L</div>
+                      <span className="rc-airline-name">LUFTHANSA</span>
                     </div>
-                    <p className="type stopover">1 PRZESIADKA (FRA)</p>
+                    <div className="rc-tags">
+                      <span className="tag plain"><img src={bagageIcon} alt="bagaż" className="inline-icon" /> Bagaż rejestrowany 23 kg</span>
+                    </div>
                   </div>
-                  <div className="arrival">
-                    <h3>13:20</h3>
-                    <p>LHR</p>
+                  <div className="flight-timeline">
+                    <div className="departure">
+                      <h3>10:00</h3>
+                      <p>WAW</p>
+                    </div>
+                    <div className="duration">
+                      <p>4h 20m</p>
+                      <div className="line">
+                        <span className="dot stopover"></span>
+                      </div>
+                      <p className="type stopover">1 PRZESIADKA (FRA)</p>
+                    </div>
+                    <div className="arrival">
+                      <h3>13:20</h3>
+                      <p>LHR</p>
+                    </div>
+                  </div>
+                  <div className="rc-details-toggle">
+                    <button className="btn-toggle">
+                      Szczegóły lotu <span className="inline-icon arrow-down"></span>
+                    </button>
                   </div>
                 </div>
                 <div className="rc-pricing">
@@ -321,10 +341,6 @@ const SearchResults = () => {
                   <p className="price-desc">Zawiera dodatkowy bagaż</p>
                   <button className="btn-select-outline">Wybierz</button>
                 </div>
-              </div>
-              
-              <div className="rc-details-toggle">
-                <button className="btn-toggle">Szczegóły lotu <span className="arrow-down">v</span></button>
               </div>
             </div>
 
