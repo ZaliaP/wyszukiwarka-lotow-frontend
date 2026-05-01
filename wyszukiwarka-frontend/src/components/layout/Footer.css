@@ -1,5 +1,5 @@
 .footer {
-  background-color: #1a1e29; /* Dark blue/grey footer */
+  background-color: #0f172a; /* Dark blue background from the image */
   color: #fff;
   padding: 4rem 2rem 1.5rem;
   font-size: 0.85rem;
@@ -107,7 +107,7 @@
 
 .newsletter-form {
   display: flex;
-  background-color: #374151;
+  background-color: #1e293b;
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -147,7 +147,7 @@
 .footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
-  border-top: 1px solid #374151;
+  border-top: 1px solid #1e293b;
   padding-top: 1.5rem;
   display: flex;
   justify-content: space-between;

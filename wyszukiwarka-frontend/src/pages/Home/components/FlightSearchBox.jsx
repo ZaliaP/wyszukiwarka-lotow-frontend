@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './FlightSearchBox.css';
 import userIcon from '../../../components/asserts/user.svg';
 import placeIcon from '../../../components/asserts/place.svg';
@@ -7,6 +8,7 @@ import downArrowIcon from '../../../components/asserts/downarrow.svg';
 
 const FlightSearchBox = () => {
   const [tripType, setTripType] = useState('roundTrip');
+  const navigate = useNavigate();
   
   return (
     <div className="search-box-container">
@@ -62,7 +64,7 @@ const FlightSearchBox = () => {
       <div className="search-inputs">
         <div className="input-group location-group">
           <img src={placeIcon} alt="Miejsce" className="input-svg-icon" />
-          <input type="text" placeholder="Skąd leciesz?" defaultValue="Warszawa (WAW)" />
+          <input type="text" placeholder="Skąd lecisz?" />
           <button className="swap-btn">
             <span className="swap-icon-text">⇄</span>
           </button>
@@ -84,7 +86,7 @@ const FlightSearchBox = () => {
         </div>
       </div>
       <div className="search-box-bottom-row">
-        <button className="search-btn">Szukaj lotów</button>
+        <button className="search-btn" onClick={() => navigate('/wyniki-wyszukiwania')}>Szukaj lotów</button>
       </div>
     </div>
   );
