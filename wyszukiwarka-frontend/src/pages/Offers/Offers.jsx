@@ -79,78 +79,88 @@ const Offers = () => {
   return (
     <div className="offers-wrapper">
       <Navbar />
-      <div className="offers-container">
+      <div className="offers-body">
 
-        <header className="offers-header">
-          <h1>Oferty lotów</h1>
-          <p>Znajdź najlepsze okazje i popularne kierunki.</p>
-        </header>
-
-        <section className="offers-section">
-          <h2>Tanie loty</h2>
-
-          <div className="offers-filters">
-            <input
-              type="text"
-              placeholder="Szukaj miasta..."
-              value={filterCity}
-              onChange={e => setFilterCity(e.target.value)}
-              className="filter-input"
-            />
-            <div className="filter-type-buttons">
-              <button className={filterType === 'wszystkie' ? 'active' : ''} onClick={() => setFilterType('wszystkie')}>Wszystkie</button>
-              <button className={filterType === 'bezposredni' ? 'active' : ''} onClick={() => setFilterType('bezposredni')}>Bezpośrednie</button>
-              <button className={filterType === 'przesiadka' ? 'active' : ''} onClick={() => setFilterType('przesiadka')}>Z przesiadką</button>
-            </div>
-            <div className="filter-price">
-              <label>Maks. cena: <strong>{maxPrice} zł</strong></label>
-              <input type="range" min={50} max={1000} step={10} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
-            </div>
-          </div>
-
-          {filtered.length === 0 && <p className="no-results">Brak lotów spełniających kryteria.</p>}
-
-          <div className="flights-grid">
-            {filtered.map(flight => (
-              <div className="flight-row" key={flight.id} onClick={() => handleFlightClick(flight)}>
-                <div className="flight-icon">
-                  <img src={airplaneIcon} alt="Samolot" className="plane-svg" />
-                </div>
-                <div className="flight-details">
-                  <h4>{flight.from} - {flight.to}</h4>
-                  <p className="flight-meta">{flight.dates} • {flight.type}</p>
-                </div>
-                <div className="flight-price">{flight.price} zł</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="offers-section">
-          <h2>Popularne kierunki</h2>
-          <div className="destinations-grid">
-            {ALL_DESTINATIONS.map(dest => (
-              <button className="destination-card" key={dest.id} type="button" onClick={() => handleDestinationClick(dest)}>
-                <div className="card-image-wrapper">
-                  <img src={dest.image} alt={dest.city} className="card-image" />
-                  <span className="card-price">{dest.price}</span>
-                </div>
-                <div className="card-content">
-                  <div className="card-top-info">
-                    <h3>{dest.city}</h3>
-                    <span className="country-info">
-                      <img src={planeSmallIcon} alt="plane" className="small-plane-icon" />
-                      {dest.country}
-                    </span>
-                  </div>
-                  <p className="card-desc">{dest.desc}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </section>
-
+  <div className="offers-sidebar">
+    <h3>Filtry</h3>
+    <div className="sidebar-section">
+      <label>Szukaj miasta</label>
+      <input
+        type="text"
+        placeholder="Szukaj miasta..."
+        value={filterCity}
+        onChange={e => setFilterCity(e.target.value)}
+        className="filter-input"
+      />
+    </div>
+    <div className="sidebar-section">
+      <label>Typ lotu</label>
+      <div className="filter-type-buttons">
+        <button className={filterType === 'wszystkie' ? 'active' : ''} onClick={() => setFilterType('wszystkie')}>Wszystkie</button>
+        <button className={filterType === 'bezposredni' ? 'active' : ''} onClick={() => setFilterType('bezposredni')}>Bezpośrednie</button>
+        <button className={filterType === 'przesiadka' ? 'active' : ''} onClick={() => setFilterType('przesiadka')}>Z przesiadką</button>
       </div>
+    </div>
+    <div className="sidebar-section">
+      <div className="filter-price">
+        <label>Maks. cena: <strong>{maxPrice} zł</strong></label>
+        <input type="range" min={50} max={1000} step={10} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
+      </div>
+    </div>
+  </div>
+
+  <div className="offers-content">
+    <header className="offers-header">
+      <h1>Oferty lotów</h1>
+      <p>Znajdź najlepsze okazje i popularne kierunki.</p>
+    </header>
+
+    <section className="offers-section">
+      <h2>Popularne kierunki</h2>
+      <div className="destinations-grid">
+        {ALL_DESTINATIONS.map(dest => (
+          <button className="destination-card" key={dest.id} type="button" onClick={() => handleDestinationClick(dest)}>
+            <div className="card-image-wrapper">
+              <img src={dest.image} alt={dest.city} className="card-image" />
+              <span className="card-price">{dest.price}</span>
+            </div>
+            <div className="card-content">
+              <div className="card-top-info">
+                <h3>{dest.city}</h3>
+                <span className="country-info">
+                  <img src={planeSmallIcon} alt="plane" className="small-plane-icon" />
+                  {dest.country}
+                </span>
+              </div>
+              <p className="card-desc">{dest.desc}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <section className="offers-section">
+      <h2>Pozostałe oferty</h2>
+      {filtered.length === 0 && <p className="no-results">Brak lotów spełniających kryteria.</p>}
+      <div className="flights-grid">
+        {filtered.map(flight => (
+          <div className="flight-row" key={flight.id} onClick={() => handleFlightClick(flight)}>
+            <div className="flight-icon">
+              <img src={airplaneIcon} alt="Samolot" className="plane-svg" />
+            </div>
+            <div className="flight-details">
+              <h4>{flight.from} - {flight.to}</h4>
+              <p className="flight-meta">{flight.dates} • {flight.type}</p>
+            </div>
+            <div className="flight-price">{flight.price} zł</div>
+          </div>
+        ))}
+      </div>
+    </section>    
+
+  </div>
+
+</div>
       <Footer />
     </div>
   );
