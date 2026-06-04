@@ -19,7 +19,7 @@ function App() {
           <Route path="/logowanie" element={<LoginSignup />} />
           <Route path="/zarzadzaj-rezerwacja" element={<ProtectedRoute><ManageBooking /></ProtectedRoute>} />
           <Route path="/wyniki-wyszukiwania" element={<SearchResults />} />
-          <Route path="/odprawa" element={<CheckIn />} />
+          <Route path="/odprawa" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
           <Route path="/oferty" element={<Offers />} />
         </Routes>
       </div>
