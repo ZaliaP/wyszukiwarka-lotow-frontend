@@ -6,6 +6,7 @@ import placeIcon from '../../../components/asserts/place.svg';
 import calendarIcon from '../../../components/asserts/calendar.svg';
 import downArrowIcon from '../../../components/asserts/downarrow.svg';
 import { buildSearchQuery, getRecentSearches, saveRecentSearch } from '../../../utils/searchStorage';
+import client from '../../../api/client'
 
 const FlightSearchBox = () => {
   const cabinClassOptions = [
@@ -26,12 +27,15 @@ const FlightSearchBox = () => {
   const [isClassOpen, setIsClassOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
+  const [originSuggestions, setOriginSuggestions] = useState([])
+  const [destSuggestions, setDestSuggestions] = useState([])
   
   const navigate = useNavigate();
   const dateOutRef = useRef(null);
   const dateReturnRef = useRef(null);
   const passengersRef = useRef(null);
   const classRef = useRef(null);
+  
 
   useEffect(() => {
     setRecentSearches(getRecentSearches());
@@ -115,6 +119,16 @@ const FlightSearchBox = () => {
     setCabinClass(search.cabinClass || 'economy');
     setErrorMessage('');
   };
+
+  const fetchSuggestions = async (value, setSuggestions) => {
+  if (value.length < 2) return setSuggestions([])
+  try {
+    const res = await client.get(`/api/v1/airports/?q=${value}`)
+    setSuggestions(res.data)
+  } catch {
+    setSuggestions([])
+  }
+}
 
   const passengerLabel = `${passengers} ${passengers === 1 ? 'pasażer' : passengers < 5 ? 'pasażerów' : 'pasażerów'}`;
   const cabinClassLabel = cabinClassOptions.find((option) => option.value === cabinClass)?.label || 'Klasa Ekonomiczna';
@@ -222,17 +236,65 @@ const FlightSearchBox = () => {
       </div>
 
       <div className="search-inputs">
-        <div className="input-group location-group">
+        <div className="input-group location-group" style={{position: 'relative'}}>
           <img src={placeIcon} alt="Miejsce" className="input-svg-icon" />
-          <input type="text" placeholder="Skąd lecisz?" value={origin} onChange={(e) => setOrigin(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Skąd lecisz?"
+            value={origin}
+            onChange={(e) => {
+              setOrigin(e.target.value)
+              fetchSuggestions(e.target.value, setOriginSuggestions)
+            }}
+          />
           <button className="swap-btn" onClick={handleSwap}>
             <span className="swap-icon-text">⇄</span>
           </button>
+          {originSuggestions.length > 0 && (
+            <div className="suggestions">
+              {originSuggestions.map(airport => (
+                <div
+                  key={airport.code}
+                  className="suggestion-item"
+                  onClick={() => {
+                    setOrigin(airport.code)
+                    setOriginSuggestions([])
+                  }}
+                >
+                  {airport.name} ({airport.code})
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-        
-        <div className="input-group location-group">
+
+        <div className="input-group location-group" style={{position: 'relative'}}>
           <img src={placeIcon} alt="Miejsce" className="input-svg-icon" />
-          <input type="text" placeholder="Dokąd lecisz?" value={dest} onChange={(e) => setDest(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Dokąd lecisz?"
+            value={dest}
+            onChange={(e) => {
+              setDest(e.target.value)
+              fetchSuggestions(e.target.value, setDestSuggestions)
+            }}
+          />
+          {destSuggestions.length > 0 && (
+            <div className="suggestions">
+              {destSuggestions.map(airport => (
+                <div
+                  key={airport.code}
+                  className="suggestion-item"
+                  onClick={() => {
+                    setDest(airport.code)
+                    setDestSuggestions([])
+                  }}
+                >
+                  {airport.name} ({airport.code})
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="input-group date-group" onClick={() => dateOutRef.current && dateOutRef.current.showPicker()}>
