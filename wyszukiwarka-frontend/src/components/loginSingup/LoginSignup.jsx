@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { loginUser, registerUser } from '../../services/api';
+import { loginUser, registerUser, extractErrorMessage } from '../../services/api';
 import './LoginSignup.css';
+
 
 import user_icon from '../asserts/person.svg';
 import password_icon from '../asserts/password.svg';
@@ -63,7 +64,7 @@ const LoginSignup = () => {
         alert('Konto zostało utworzone. Możesz się teraz zalogować.');
       }
     } catch (err) {
-      setError(err?.response?.data?.message || 'Wystąpił błąd');
+      setError(extractErrorMessage(err));
     } finally {
       setLoading(false);
     }
