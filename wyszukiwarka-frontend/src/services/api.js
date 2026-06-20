@@ -7,201 +7,120 @@ const api = axios.create({
   },
 });
 
-// Możemy dodać interceptory np. do dołączania tokenu JWT
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Token ${token}`; // DRF Token, nie Bearer!
   }
   return config;
 });
 
+const AIRLINE_MAP = {
+  WIZZ_AIR: { name: 'Wizz Air', key: 'wizz' },
+  RYANAIR: { name: 'Ryanair', key: 'ryanair' },
+  LOT: { name: 'LOT Polish Airlines', key: 'lot' },
+  LUFTHANSA: { name: 'Lufthansa', key: 'lufthansa' },
+};
+
+function formatTime(isoString) {
+  return new Date(isoString).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDuration(minutes) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${h}h ${m}m`;
+}
+
+function mapFlight(raw, params) {
+  const firstLeg = raw.legs[0];
+  const lastLeg = raw.legs[raw.legs.length - 1];
+  const airlineInfo = AIRLINE_MAP[firstLeg.airline_code] || { name: firstLeg.airline_code, key: 'other' };
+
+  return {
+    id: raw.offer_id,
+    airline: airlineInfo.name,
+    airlineKey: airlineInfo.key,
+    from: params.origin,
+    to: params.dest,
+    originLabel: firstLeg.from,
+    destinationLabel: lastLeg.to,
+    date: params.dateOut,
+    price: raw.price,
+    timeFrom: formatTime(firstLeg.departure),
+    timeTo: formatTime(lastLeg.arrival),
+    duration: formatDuration(raw.total_duration_minutes),
+    durationMinutes: raw.total_duration_minutes,
+    type: raw.stops === 0 ? 'Bezpośredni' : raw.stops === 1 ? '1 Przesiadka' : '2+ przesiadki',
+    stops: raw.stops,
+    baggageType: 'unknown',
+    baggageLabel: 'Sprawdź zasady bagażu u przewoźnika',
+    flightNumber: raw.legs.map(l => `${l.airline_code} ${l.flight_number}`).join(' + '),
+    co2Saving: '',
+  };
+}
+
 export const searchFlights = async (params) => {
-  // Symulacja działania dla Django
-  // return await api.get('/flights', { params });
-  
-  // Na ten moment mockujemy:
-  return new Promise((resolve) => setTimeout(() => resolve([
-    {
-      id: 1,
-      airline: 'Wizz Air',
-      airlineKey: 'wizz',
-      from: params.origin || 'WAW',
-      to: params.dest || 'LHR',
-      originLabel: 'Warszawa, Lotnisko Chopina (WAW)',
-      destinationLabel: 'Londyn, Luton Airport (LTN)',
-      date: params.dateOut,
-      price: 199,
-      timeFrom: '14:20',
-      timeTo: '16:15',
-      duration: '1h 55m',
-      durationMinutes: 115,
-      type: 'Bezpośredni',
-      stops: 0,
-      baggageType: 'personal',
-      baggageLabel: 'Tylko przedmioty osobiste',
-      flightNumber: 'W6 1301 (Airbus A320)',
-      co2Saving: '-18% CO2',
+  const res = await api.get('/v1/search/flights/', {
+    params: {
+      origin: params.origin,
+      destination: params.dest,
+      departure_date: params.dateOut,
     },
-    {
-      id: 2,
-      airline: 'LOT Polish Airlines',
-      airlineKey: 'lot',
-      from: params.origin || 'WAW',
-      to: params.dest || 'LHR',
-      originLabel: 'Warszawa, Lotnisko Chopina (WAW)',
-      destinationLabel: 'Londyn, Heathrow Airport (LHR)',
-      date: params.dateOut,
-      price: 450,
-      timeFrom: '08:00',
-      timeTo: '09:45',
-      duration: '1h 45m',
-      durationMinutes: 105,
-      type: 'Bezpośredni',
-      stops: 0,
-      baggageType: 'checked',
-      baggageLabel: 'Wliczony bagaż podręczny',
-      flightNumber: 'LO 281 (Boeing 737 MAX)',
-      co2Saving: '',
-    },
-    {
-      id: 3,
-      airline: 'Lufthansa',
-      airlineKey: 'lufthansa',
-      from: params.origin || 'WAW',
-      to: params.dest || 'LHR',
-      originLabel: 'Warszawa, Lotnisko Chopina (WAW)',
-      destinationLabel: 'Londyn, Heathrow Airport (LHR)',
-      date: params.dateOut,
-      price: 820,
-      timeFrom: '10:00',
-      timeTo: '13:20',
-      duration: '4h 20m',
-      durationMinutes: 260,
-      type: '1 Przesiadka',
-      stops: 1,
-      baggageType: 'checked',
-      baggageLabel: 'Bagaż rejestrowany 23 kg',
-      flightNumber: 'LH 1353 + LH 910',
-      co2Saving: '',
-    },
-    {
-      id: 4,
-      airline: 'Ryanair',
-      airlineKey: 'ryanair',
-      from: params.origin || 'WAW',
-      to: params.dest || 'LHR',
-      originLabel: 'Warszawa Modlin (WMI)',
-      destinationLabel: 'Londyn, Stansted Airport (STN)',
-      date: params.dateOut,
-      price: 285,
-      timeFrom: '19:15',
-      timeTo: '21:05',
-      duration: '1h 50m',
-      durationMinutes: 110,
-      type: 'Bezpośredni',
-      stops: 0,
-      baggageType: 'cabin',
-      baggageLabel: 'Bagaż podręczny 10 kg',
-      flightNumber: 'FR 1881 (Boeing 737)',
-      co2Saving: '-12% CO2',
-    },
-    {
-      id: 5,
-      airline: 'LOT Polish Airlines',
-      airlineKey: 'lot',
-      from: params.origin || 'WAW',
-      to: params.dest || 'LHR',
-      originLabel: 'Warszawa, Lotnisko Chopina (WAW)',
-      destinationLabel: 'Londyn, Heathrow Airport (LHR)',
-      date: params.dateOut,
-      price: 1200,
-      timeFrom: '06:10',
-      timeTo: '15:40',
-      duration: '8h 30m',
-      durationMinutes: 510,
-      type: '2+ przesiadki',
-      stops: 2,
-      baggageType: 'checked',
-      baggageLabel: 'Bagaż rejestrowany 23 kg',
-      flightNumber: 'LO 391 + LO 745 + LO 287',
-      co2Saving: '',
-    }
-  ]), 800));
+  });
+
+  return res.data.flights.map((f) => mapFlight(f, params));
 };
 
 
 //przykładowi użytkownicy
-const MOCK_USERS = [
-  { id: 1, name: 'Jan Kowalski', email: 'jan@test.pl', password: 'haslo123' },
-];
-
 export const loginUser = async ({ email, password }) => {
-  await new Promise(res => setTimeout(res, 500));
-
-  const user = MOCK_USERS.find(u => u.email === email && u.password === password);
-  if (!user) throw { response: { data: { message: 'Nieprawidłowy email lub hasło' } } };
-
-  return { token: `mock-token-${user.id}` };
+  const res = await api.post('/v1/auth/login/', { email, password });
+  return res.data; // { token, user }
 };
 
 export const registerUser = async ({ name, email, password, confirmPassword }) => {
-  await new Promise(res => setTimeout(res, 500));
-
-  if (!name || !email || !password)
-    throw { response: { data: { message: 'Wypełnij wszystkie pola' } } };
-
-  if (password !== confirmPassword)
+  if (password !== confirmPassword) {
     throw { response: { data: { message: 'Hasła nie są zgodne' } } };
+  }
 
-  if (password.length < 8)
-    throw { response: { data: { message: 'Hasło musi mieć minimum 8 znaków' } } };
+  // backend chce first_name i last_name osobno
+  const [first_name, ...rest] = name.trim().split(' ');
+  const last_name = rest.join(' ') || first_name; // fallback gdyby ktoś podał jedno słowo
 
-  if (MOCK_USERS.find(u => u.email === email))
-    throw { response: { data: { message: 'Ten email jest już zajęty' } } };
+  const res = await api.post('/v1/auth/register/', {
+    email,
+    password,
+    first_name,
+    last_name,
+  });
+  return res.data;
+};
 
-  MOCK_USERS.push({ id: Date.now(), name, email, password });
-  return { success: true };
+export const logoutUser = async () => {
+  await api.post('/v1/auth/logout/');
+  localStorage.removeItem('token');
+};
+
+export const getMe = async () => {
+  const res = await api.get('/v1/auth/me/');
+  return res.data;
+};
+
+export const extractErrorMessage = (err) => {
+  const data = err?.response?.data;
+  if (!data) return 'Wystąpił błąd';
+  if (data.message) return data.message;
+  if (data.non_field_errors) return data.non_field_errors[0];
+  const firstKey = Object.keys(data)[0];
+  if (firstKey && Array.isArray(data[firstKey])) return data[firstKey][0];
+  return 'Wystąpił błąd';
 };
 
 //mocki rezerwacji 
-const MOCK_BOOKINGS = [
-  {
-    id: 'A92BCK',
-    status: 'confirmed',
-    airline: 'Wizz Air',
-    from: 'WAW', to: 'LTN',
-    timeFrom: '14:20', timeTo: '16:15',
-    duration: '1h 55m',
-    type: 'Bezpośredni',
-    passenger: [{ name: 'Jan Kowalski', type: 'Dorosły', initials: 'J', seat: null }],
-    takenSeats: ['1A', '1B', '2C', '3F', '5A', '5B', '5C', '5D', '5E', '5F', '7C', '8D', '10A', '12B'],
-    airlineInitial: 'W',   
-    points: '1,450',
-    baggage: 'Tylko mały plecak',
-    checkInDaysLeft: 10,
-  },
-  {
-    id: 'B31XYZ',
-    status: 'confirmed',
-    airline: 'LOT Polish Airlines',
-    from: 'KRK', to: 'CDG',
-    timeFrom: '08:00', timeTo: '10:30',
-    duration: '2h 30m',
-    type: 'Bezpośredni',
-    passenger:[{ name: 'Jan Kowalski', type: 'Dorosły', initials: 'J', seat: '14A' }],
-    takenSeats: ['14B'],
-    airlineInitial: 'L',    
-    points: '2,100',
-    baggage: 'Bagaż podręczny 10 kg',
-    checkInDaysLeft: 25,
-  },
-];
-
 export const getUserBookings = async () => {
-  await new Promise(res => setTimeout(res, 600));
-  return MOCK_BOOKINGS;
-  // docelowo: return await api.get('/bookings').then(r => r.data);
+  const res = await api.get('/v1/bookings/');
+  return res.data.bookings; // backend zwraca { detail, bookings: [...] }
 };
 
 export default api;
