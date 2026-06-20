@@ -7,6 +7,7 @@ import calendarIcon from '../../../components/asserts/calendar.svg';
 import downArrowIcon from '../../../components/asserts/downarrow.svg';
 import { buildSearchQuery, getRecentSearches, saveRecentSearch } from '../../../utils/searchStorage';
 import client from '../../../api/client'
+import { searchAirports } from '../../../utils/airports';
 
 const FlightSearchBox = () => {
   const cabinClassOptions = [
@@ -62,46 +63,65 @@ const FlightSearchBox = () => {
     navigate(`/wyniki-wyszukiwania?${buildSearchQuery(search)}`);
   };
 
-  const handleSearch = () => {
-    const normalizedOrigin = origin.trim().toUpperCase();
-    const normalizedDest = dest.trim().toUpperCase();
+  const resolveAirportCode = (text) => {
+  const trimmed = text.trim();
+  if (/^[A-Za-z]{3}$/.test(trimmed)) {
+    return trimmed.toUpperCase();
+  }
+  const matches = searchAirports(trimmed);
+  return matches.length > 0 ? matches[0].code : null;
+};
+  
 
-    if (!normalizedOrigin || !normalizedDest) {
-      setErrorMessage('Uzupełnij miejsce wylotu i przylotu.');
-      return;
-    }
+const handleSearch = async () => {
+  if (!origin.trim() || !dest.trim()) {
+    setErrorMessage('Uzupełnij miejsce wylotu i przylotu.');
+    return;
+  }
 
-    if (normalizedOrigin === normalizedDest) {
-      setErrorMessage('Miejsce wylotu i przylotu nie może być takie samo.');
-      return;
-    }
+  const resolvedOrigin = await resolveAirportCode(origin);
+  const resolvedDest = await resolveAirportCode(dest);
 
-    if (!dateOut) {
-      setErrorMessage('Wybierz datę wylotu.');
-      return;
-    }
+  if (!resolvedOrigin) {
+    setErrorMessage(`Nie znaleziono lotniska dla „${origin}”.`);
+    return;
+  }
+  if (!resolvedDest) {
+    setErrorMessage(`Nie znaleziono lotniska dla „${dest}”.`);
+    return;
+  }
 
-    if (tripType === 'roundTrip' && !dateReturn) {
-      setErrorMessage('Wybierz datę powrotu.');
-      return;
-    }
+  if (resolvedOrigin === resolvedDest) {
+    setErrorMessage('Miejsce wylotu i przylotu nie może być takie samo.');
+    return;
+  }
 
-    if (tripType === 'roundTrip' && dateReturn < dateOut) {
-      setErrorMessage('Data powrotu nie może być wcześniejsza niż data wylotu.');
-      return;
-    }
+  if (!dateOut) {
+    setErrorMessage('Wybierz datę wylotu.');
+    return;
+  }
 
-    setErrorMessage('');
-    executeSearch({
-      origin: normalizedOrigin,
-      dest: normalizedDest,
-      dateOut,
-      dateReturn,
-      tripType,
-      passengers,
-      cabinClass,
-    });
-  };
+  if (tripType === 'roundTrip' && !dateReturn) {
+    setErrorMessage('Wybierz datę powrotu.');
+    return;
+  }
+
+  if (tripType === 'roundTrip' && dateReturn < dateOut) {
+    setErrorMessage('Data powrotu nie może być wcześniejsza niż data wylotu.');
+    return;
+  }
+
+  setErrorMessage('');
+  executeSearch({
+    origin: resolvedOrigin,
+    dest: resolvedDest,
+    dateOut,
+    dateReturn,
+    tripType,
+    passengers,
+    cabinClass,
+  });
+};
 
   const handleSwap = () => {
     const temp = origin;
@@ -120,15 +140,9 @@ const FlightSearchBox = () => {
     setErrorMessage('');
   };
 
-  const fetchSuggestions = async (value, setSuggestions) => {
-  if (value.length < 2) return setSuggestions([])
-  try {
-    const res = await client.get(`/api/v1/airports/?q=${value}`)
-    setSuggestions(res.data)
-  } catch {
-    setSuggestions([])
-  }
-}
+  const fetchSuggestions = (value, setSuggestions) => {
+  setSuggestions(searchAirports(value));
+};
 
   const passengerLabel = `${passengers} ${passengers === 1 ? 'pasażer' : passengers < 5 ? 'pasażerów' : 'pasażerów'}`;
   const cabinClassLabel = cabinClassOptions.find((option) => option.value === cabinClass)?.label || 'Klasa Ekonomiczna';
