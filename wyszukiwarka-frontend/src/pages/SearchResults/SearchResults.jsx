@@ -86,8 +86,8 @@ function SearchResults() {
       if (flight.stops === 0 && !stopsDirect) return false;
       if (flight.stops === 1 && !stopsOne) return false;
       if (flight.stops > 1 && !stopsMulti) return false;
-      if (!airlines[flight.airlineKey]) return false;
-      if (!baggage[flight.baggageType]) return false;
+      if (airlines[flight.airlineKey] === false) return false;
+      if (baggage[flight.baggageType] === false) return false;
 
       if (timeFilter !== 'all') {
         const departureHour = Number(flight.timeFrom.split(':')[0]);
