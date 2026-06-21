@@ -17,13 +17,22 @@ const FlightSearchBox = () => {
     { value: 'first', label: 'Pierwsza Klasa' },
   ];
 
-  const [tripType, setTripType] = useState('roundTrip');
-  const [origin, setOrigin] = useState('');
-  const [dest, setDest] = useState('');
-  const [dateOut, setDateOut] = useState('');
-  const [dateReturn, setDateReturn] = useState('');
-  const [passengers, setPassengers] = useState(1);
-  const [cabinClass, setCabinClass] = useState('economy');
+  const queryParams = new URLSearchParams(window.location.search);
+  const initialOrigin = queryParams.get('origin') || '';
+  const initialDest = queryParams.get('dest') || '';
+  const initialDateOut = queryParams.get('dateOut') || '';
+  const initialDateReturn = queryParams.get('dateReturn') || '';
+  const initialTripType = queryParams.get('tripType') || 'roundTrip';
+  const initialPassengers = Number(queryParams.get('passengers')) || 1;
+  const initialCabinClass = queryParams.get('cabinClass') || 'economy';
+
+  const [tripType, setTripType] = useState(initialTripType);
+  const [origin, setOrigin] = useState(initialOrigin);
+  const [dest, setDest] = useState(initialDest);
+  const [dateOut, setDateOut] = useState(initialDateOut);
+  const [dateReturn, setDateReturn] = useState(initialDateReturn);
+  const [passengers, setPassengers] = useState(initialPassengers);
+  const [cabinClass, setCabinClass] = useState(initialCabinClass);
   const [isPassengersOpen, setIsPassengersOpen] = useState(false);
   const [isClassOpen, setIsClassOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

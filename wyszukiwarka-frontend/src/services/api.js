@@ -15,6 +15,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const IATA_AIRLINE_MAP = {
+  LO: { name: 'LOT Polish Airlines', key: 'lot' },
+  LH: { name: 'Lufthansa', key: 'lufthansa' },
+  FR: { name: 'Ryanair', key: 'ryanair' },
+  W6: { name: 'Wizz Air', key: 'wizz' },
+  W4: { name: 'Wizz Air', key: 'wizz' },
+  DY: { name: 'Norwegian', key: 'norwegian' },
+};
+
 const AIRLINE_MAP = {
   WIZZ_AIR: { name: 'Wizz Air', key: 'wizz' },
   RYANAIR: { name: 'Ryanair', key: 'ryanair' },
@@ -35,7 +44,8 @@ function formatDuration(minutes) {
 function mapFlight(raw, params) {
   const firstLeg = raw.legs[0];
   const lastLeg = raw.legs[raw.legs.length - 1];
-  const airlineInfo = AIRLINE_MAP[firstLeg.airline_code] || { name: firstLeg.airline_code, key: 'other' };
+  const airlineCode = firstLeg.airline_code;
+  const airlineInfo = IATA_AIRLINE_MAP[airlineCode] || AIRLINE_MAP[airlineCode] || { name: airlineCode, key: 'other' };
 
   return {
     id: raw.offer_id,
@@ -57,6 +67,18 @@ function mapFlight(raw, params) {
     baggageLabel: 'Sprawdź zasady bagażu u przewoźnika',
     flightNumber: raw.legs.map(l => `${l.airline_code} ${l.flight_number}`).join(' + '),
     co2Saving: '',
+    legs: raw.legs.map((leg) => {
+      const legCode = leg.airline_code;
+      const legAirline = IATA_AIRLINE_MAP[legCode] || AIRLINE_MAP[legCode] || { name: legCode, key: 'other' };
+      return {
+        ...leg,
+        airlineName: legAirline.name,
+        airlineKey: legAirline.key,
+        timeFrom: formatTime(leg.departure),
+        timeTo: formatTime(leg.arrival),
+        duration: formatDuration(leg.duration_minutes),
+      };
+    })
   };
 }
 

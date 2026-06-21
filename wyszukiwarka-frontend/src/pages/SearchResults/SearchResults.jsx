@@ -4,6 +4,8 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { searchFlights } from '../../services/api';
 import './SearchResults.css';
+import FlightSearchBox from '../Home/components/FlightSearchBox';
+import { AIRPORTS } from '../../utils/airports';
 
 import calendarIcon from '../../components/asserts/calendar2.svg';
 import userIcon from '../../components/asserts/person.svg';
@@ -14,13 +16,6 @@ import sunIcon from '../../components/asserts/sun.svg';
 import halfSunIcon from '../../components/asserts/halfsun.svg';
 import moonIcon from '../../components/asserts/moon.svg';
 import leafIcon from '../../components/asserts/leaf.svg';
-
-const defaultAirlines = {
-  wizz: true,
-  ryanair: true,
-  lot: true,
-  lufthansa: true,
-};
 
 const defaultBaggage = {
   personal: true,
@@ -38,9 +33,11 @@ function SearchResults() {
   const [stopsOne, setStopsOne] = useState(true);
   const [stopsMulti, setStopsMulti] = useState(true);
   const [timeFilter, setTimeFilter] = useState('all');
-  const [airlines, setAirlines] = useState(defaultAirlines);
+  const [selectedAirlines, setSelectedAirlines] = useState({});
+  const [isEditingSearch, setIsEditingSearch] = useState(false);
   const [baggage, setBaggage] = useState(defaultBaggage);
   const [expandedFlight, setExpandedFlight] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(5);
 
   const origin = searchParams.get('origin') || 'WAW';
   const destination = searchParams.get('dest') || 'LHR';
@@ -61,15 +58,25 @@ function SearchResults() {
 
     async function loadFlights() {
       setLoading(true);
-      const data = await searchFlights({
-        origin,
-        dest: destination,
-        dateOut: outboundDate,
-      });
+      try {
+        const data = await searchFlights({
+          origin,
+          dest: destination,
+          dateOut: outboundDate,
+        });
 
-      if (!cancelled) {
-        setFlights(data);
-        setLoading(false);
+        if (!cancelled) {
+          setFlights(data);
+        }
+      } catch (err) {
+        console.error('Failed to load search results:', err);
+        if (!cancelled) {
+          setFlights([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
@@ -80,13 +87,50 @@ function SearchResults() {
     };
   }, [destination, origin, outboundDate]);
 
+  useEffect(() => {
+    setIsEditingSearch(false);
+  }, [destination, origin, outboundDate]);
+
+  useEffect(() => {
+    setVisibleCount(5);
+  }, [flights]);
+
+  const getCityName = (code) => {
+    const airport = AIRPORTS.find((a) => a.code === code.toUpperCase());
+    return airport ? airport.name.split(',')[0] : code;
+  };
+
+  const uniqueAirlines = useMemo(() => {
+    const list = [];
+    const seen = new Set();
+    flights.forEach((f) => {
+      const key = f.airlineKey;
+      const name = f.airline;
+      if (key && !seen.has(key)) {
+        seen.add(key);
+        list.push({ key, name });
+      }
+    });
+    return list;
+  }, [flights]);
+
+  useEffect(() => {
+    if (flights.length > 0) {
+      const initial = {};
+      flights.forEach((f) => {
+        initial[f.airlineKey] = true;
+      });
+      setSelectedAirlines(initial);
+    }
+  }, [flights]);
+
   const processedFlights = useMemo(() => {
     const visibleFlights = flights.filter((flight) => {
       if (flight.price > maxPrice) return false;
       if (flight.stops === 0 && !stopsDirect) return false;
       if (flight.stops === 1 && !stopsOne) return false;
       if (flight.stops > 1 && !stopsMulti) return false;
-      if (airlines[flight.airlineKey] === false) return false;
+      if (selectedAirlines[flight.airlineKey] === false) return false;
       if (baggage[flight.baggageType] === false) return false;
 
       if (timeFilter !== 'all') {
@@ -112,7 +156,11 @@ function SearchResults() {
     }
 
     return sortedFlights;
-  }, [activeTab, airlines, baggage, flights, maxPrice, stopsDirect, stopsMulti, stopsOne, timeFilter]);
+  }, [activeTab, selectedAirlines, baggage, flights, maxPrice, stopsDirect, stopsMulti, stopsOne, timeFilter]);
+
+  const visibleFlights = useMemo(() => {
+    return processedFlights.slice(0, visibleCount);
+  }, [processedFlights, visibleCount]);
 
   const airlinePriceMap = useMemo(() => {
     const map = {};
@@ -130,17 +178,45 @@ function SearchResults() {
     setStopsOne(true);
     setStopsMulti(true);
     setTimeFilter('all');
-    setAirlines(defaultAirlines);
     setBaggage(defaultBaggage);
+    const resetAirlines = {};
+    uniqueAirlines.forEach((a) => {
+      resetAirlines[a.key] = true;
+    });
+    setSelectedAirlines(resetAirlines);
   }
 
   function toggleAirline(airlineKey) {
-    setAirlines((current) => ({ ...current, [airlineKey]: !current[airlineKey] }));
+    setSelectedAirlines((current) => ({
+      ...current,
+      [airlineKey]: current[airlineKey] === false ? true : false,
+    }));
   }
 
   function toggleBaggage(baggageKey) {
     setBaggage((current) => ({ ...current, [baggageKey]: !current[baggageKey] }));
   }
+
+  const handleSelectFlight = (flight) => {
+    let url = 'https://www.google.com/travel/flights';
+    const date = flight.date || outboundDate;
+    
+    if (flight.airlineKey === 'wizz') {
+      url = `https://wizzair.com/pl-pl#/booking/select-flight/${flight.from}/${flight.to}/${date}/1/0/0/0/null`;
+    } else if (flight.airlineKey === 'ryanair') {
+      url = `https://www.ryanair.com/pl/pl/trip/flights/select?adults=1&teens=0&children=0&infants=0&dateOut=${date}&origin=${flight.from}&destination=${flight.to}&isConnectedFlight=false&isReturn=false&discount=0`;
+    } else if (flight.airlineKey === 'lot') {
+      url = `https://www.lot.com/pl/pl/lot-loty?origin=${flight.from}&destination=${flight.to}&departureDate=${date}&adults=1`;
+    } else if (flight.airlineKey === 'lufthansa') {
+      url = `https://www.lufthansa.com/pl/pl/homepage`;
+    } else if (flight.airlineKey === 'norwegian') {
+      url = `https://www.norwegian.com`;
+    } else {
+      url = `https://www.google.com/travel/flights?q=Flights%20from%20${flight.from}%20to%20${flight.to}%20on%20${date}`;
+    }
+
+    window.open(url, '_blank');
+  };
 
   function toggleExpandedFlight(flightId) {
     setExpandedFlight((current) => (current === flightId ? null : flightId));
@@ -163,17 +239,26 @@ function SearchResults() {
     <div className="search-results-wrapper manage-booking-wrapper">
       <Navbar />
 
-      <div className="search-summary-bar">
-        <div className="summary-container">
+      <div 
+        className="search-summary-bar" 
+        style={{ cursor: 'pointer' }}
+        onClick={() => setIsEditingSearch(!isEditingSearch)}
+        title="Kliknij, aby edytować wyszukiwanie"
+      >
+        <div className="summary-container" onClick={(e) => {
+          if (e.target.closest('.btn-track-prices') || e.target.closest('.summary-actions')) {
+            e.stopPropagation();
+          }
+        }}>
           <div className="summary-route">
             <div className="route-city">
               <span className="city-code">{origin}</span>
-              <span className="city-name">Warszawa</span>
+              <span className="city-name">{getCityName(origin)}</span>
             </div>
             <span className="route-arrow">→</span>
             <div className="route-city">
               <span className="city-code">{destination}</span>
-              <span className="city-name">Londyn</span>
+              <span className="city-name">{getCityName(destination)}</span>
             </div>
           </div>
 
@@ -196,6 +281,40 @@ function SearchResults() {
           </div>
         </div>
       </div>
+
+      {isEditingSearch && (
+        <div className="edit-search-box-wrapper" style={{
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e5e7eb',
+          padding: '24px 0',
+          boxShadow: 'inset 0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.05)',
+          animation: 'slideDown 0.3s ease-out',
+          zIndex: 10
+        }}>
+          <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '0 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Edytuj wyszukiwanie</h3>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditingSearch(false);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#9ca3af',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  fontWeight: '600'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <FlightSearchBox />
+          </div>
+        </div>
+      )}
 
       <div className="search-results-content">
         <aside className="filters-sidebar">
@@ -277,26 +396,21 @@ function SearchResults() {
 
           <div className="filter-section">
             <h4>Linie lotnicze</h4>
-            <label className="checkbox-label">
-              <input type="checkbox" checked={airlines.wizz} onChange={() => toggleAirline('wizz')} />
-              <span className="label-text">Wizz Air</span>
-              <span className="price-tag">{airlinePriceMap.wizz || 199} zł</span>
-            </label>
-            <label className="checkbox-label">
-              <input type="checkbox" checked={airlines.ryanair} onChange={() => toggleAirline('ryanair')} />
-              <span className="label-text">Ryanair</span>
-              <span className="price-tag">{airlinePriceMap.ryanair || 285} zł</span>
-            </label>
-            <label className="checkbox-label">
-              <input type="checkbox" checked={airlines.lot} onChange={() => toggleAirline('lot')} />
-              <span className="label-text">LOT</span>
-              <span className="price-tag">{airlinePriceMap.lot || 450} zł</span>
-            </label>
-            <label className="checkbox-label">
-              <input type="checkbox" checked={airlines.lufthansa} onChange={() => toggleAirline('lufthansa')} />
-              <span className="label-text">Lufthansa</span>
-              <span className="price-tag">{airlinePriceMap.lufthansa || 820} zł</span>
-            </label>
+            {uniqueAirlines.length > 0 ? (
+              uniqueAirlines.map((airline) => (
+                <label className="checkbox-label" key={airline.key}>
+                  <input
+                    type="checkbox"
+                    checked={selectedAirlines[airline.key] !== false}
+                    onChange={() => toggleAirline(airline.key)}
+                  />
+                  <span className="label-text">{airline.name}</span>
+                  <span className="price-tag">{airlinePriceMap[airline.key] ? `${Math.round(airlinePriceMap[airline.key])} zł` : '—'}</span>
+                </label>
+              ))
+            ) : (
+              <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>Brak linii lotniczych</p>
+            )}
           </div>
         </aside>
 
@@ -331,7 +445,7 @@ function SearchResults() {
             {loading ? <div style={{ padding: '40px', textAlign: 'center' }}>Ładowanie lotów...</div> : null}
             {!loading && processedFlights.length === 0 ? <div style={{ padding: '40px', textAlign: 'center' }}>Brak lotów dla aktualnych filtrów.</div> : null}
 
-            {!loading && processedFlights.map((flight, index) => {
+            {!loading && visibleFlights.map((flight, index) => {
               const isExpanded = expandedFlight === flight.id;
 
               return (
@@ -378,34 +492,101 @@ function SearchResults() {
                     <div className="rc-pricing">
                       <h3 className="price">{flight.price}zł</h3>
                       <p className="price-desc">Zwykły bilet / os.</p>
-                      <button className={index === 0 ? 'btn-select-main' : 'btn-select-outline'}>Wybierz</button>
+                      <button 
+                        className={index === 0 ? 'btn-select-main' : 'btn-select-outline'}
+                        onClick={() => handleSelectFlight(flight)}
+                      >
+                        Wybierz
+                      </button>
                     </div>
                   </div>
 
                   {isExpanded ? (
                     <div className="rc-expanded-details">
                       <div className="timeline-vertical">
-                        <div className="timeline-point">
-                          <span className="time-dot"></span>
-                          <div className="point-info">
-                            <h4>Wylot • {flight.timeFrom}</h4>
-                            <p>{flight.originLabel}</p>
-                          </div>
-                        </div>
+                        {flight.legs && flight.legs.length > 0 ? (
+                          flight.legs.map((leg, legIdx) => {
+                            const showLayover = legIdx > 0;
+                            let layoverText = '';
+                            if (showLayover) {
+                              const prevLeg = flight.legs[legIdx - 1];
+                              const diffMs = new Date(leg.departure) - new Date(prevLeg.arrival);
+                              if (diffMs > 0) {
+                                const diffMins = Math.floor(diffMs / (1000 * 60));
+                                const h = Math.floor(diffMins / 60);
+                                const m = diffMins % 60;
+                                layoverText = `Przesiadka: ${h}h ${m}m na lotnisku ${prevLeg.to} (od ${prevLeg.timeTo} do ${leg.timeFrom})`;
+                              }
+                            }
 
-                        <div className="timeline-travel">
-                          <span>{flight.flightNumber}</span>
-                          <span><img src={bagageIcon} alt="bagaż" className="inline-icon" /> {flight.baggageLabel}</span>
-                          <span><img src={brightIcon} alt="klasa" className="inline-icon" /> Klasa ekonomiczna</span>
-                        </div>
+                            return (
+                              <React.Fragment key={legIdx}>
+                                {showLayover && (
+                                  <div className="timeline-layover" style={{
+                                    margin: '16px 0',
+                                    paddingLeft: '16px',
+                                    color: '#d97706',
+                                    fontWeight: '600',
+                                    fontSize: '12.5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                  }}>
+                                    <span>🕒 {layoverText}</span>
+                                  </div>
+                                )}
 
-                        <div className="timeline-point">
-                          <span className="time-dot"></span>
-                          <div className="point-info">
-                            <h4>Przylot • {flight.timeTo}</h4>
-                            <p>{flight.destinationLabel}</p>
-                          </div>
-                        </div>
+                                <div className="timeline-point">
+                                  <span className="time-dot"></span>
+                                  <div className="point-info">
+                                    <h4>Wylot • {leg.timeFrom}</h4>
+                                    <p>{leg.from} • {leg.airlineName || leg.airline_code}</p>
+                                  </div>
+                                </div>
+
+                                <div className="timeline-travel">
+                                  <span>{leg.airline_code} {leg.flight_number} • Czas lotu: {leg.duration}</span>
+                                  <span><img src={bagageIcon} alt="bagaż" className="inline-icon" /> {flight.baggageLabel}</span>
+                                  <span><img src={brightIcon} alt="klasa" className="inline-icon" /> Klasa ekonomiczna</span>
+                                </div>
+
+                                {legIdx === flight.legs.length - 1 && (
+                                  <div className="timeline-point">
+                                    <span className="time-dot"></span>
+                                    <div className="point-info">
+                                      <h4>Przylot • {leg.timeTo}</h4>
+                                      <p>{leg.to}</p>
+                                    </div>
+                                  </div>
+                                )}
+                              </React.Fragment>
+                            );
+                          })
+                        ) : (
+                          <>
+                            <div className="timeline-point">
+                              <span className="time-dot"></span>
+                              <div className="point-info">
+                                <h4>Wylot • {flight.timeFrom}</h4>
+                                <p>{flight.originLabel}</p>
+                              </div>
+                            </div>
+
+                            <div className="timeline-travel">
+                              <span>{flight.flightNumber}</span>
+                              <span><img src={bagageIcon} alt="bagaż" className="inline-icon" /> {flight.baggageLabel}</span>
+                              <span><img src={brightIcon} alt="klasa" className="inline-icon" /> Klasa ekonomiczna</span>
+                            </div>
+
+                            <div className="timeline-point">
+                              <span className="time-dot"></span>
+                              <div className="point-info">
+                                <h4>Przylot • {flight.timeTo}</h4>
+                                <p>{flight.destinationLabel}</p>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   ) : null}
@@ -414,9 +595,16 @@ function SearchResults() {
             })}
           </div>
 
-          <div className="btn-load-more-container">
-            <button className="btn-load-more">↻ Pokaż więcej wyników (24)</button>
-          </div>
+          {processedFlights.length > visibleCount && (
+            <div className="btn-load-more-container">
+              <button 
+                className="btn-load-more"
+                onClick={() => setVisibleCount((prev) => prev + 5)}
+              >
+                ↻ Pokaż więcej wyników ({processedFlights.length - visibleCount})
+              </button>
+            </div>
+          )}
         </main>
       </div>
 

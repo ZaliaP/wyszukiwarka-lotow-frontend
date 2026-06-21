@@ -132,3 +132,23 @@
   background-color: #f0f7ff;
   border-color: #4285F4;
 }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+}
+
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.skeleton-icon {
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+}
+
+.skeleton-text {
+  background-color: #e5e7eb;
+  border-radius: 4px;
+}
